@@ -1,8 +1,0 @@
-.idea
-pkg
-tmp
-gemsurance_report.html
-gemsurance_report.yml
-.DS_Store
-.bundle
-Gemfile.lock
