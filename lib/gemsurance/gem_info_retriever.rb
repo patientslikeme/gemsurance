@@ -11,14 +11,14 @@ module Gemsurance
       attr_reader :name, :current_version, :newest_version, :in_gem_file, :vulnerabilities,
                   :homepage_uri, :source_code_uri, :documentation_uri, :status
 
-      def initialize(name, current_version, newest_version, in_gem_file, homepage_uri, source_code_uri, documentation_uri, status = STATUS_CURRENT)
+      def initialize(name, current_version, newest_version, in_gem_file, status = STATUS_CURRENT)
         @name = name
         @current_version = current_version
         @newest_version = newest_version
         @in_gem_file = in_gem_file
-        @homepage_uri = homepage_uri
-        @documentation_uri = documentation_uri
-        @source_code_uri = source_code_uri
+        @homepage_uri = ""
+        @documentation_uri = ""
+        @source_code_uri = ""
         @status = status
         @vulnerabilities = []
       end
@@ -131,30 +131,17 @@ module Gemsurance
         gem_outdated = Gem::Version.new(active_spec.version) > Gem::Version.new(current_spec.version)
         git_outdated = current_spec.git_version != active_spec.git_version
 
-        info = get_gem_info(active_spec.name)
-        homepage_uri      = info['homepage_uri']
-        documentation_uri = info['documentation_uri']
-        source_code_uri   = info['source_code_uri']
-
         # TODO: handle git versions
         # spec_version    = "#{active_spec.version}#{active_spec.git_version}"
         # current_version = "#{current_spec.version}#{current_spec.git_version}"
         in_gem_file = @dependencies.any?{|d| d.name == active_spec.name}
         if gem_outdated || git_outdated
-          gem_infos << GemInfo.new(active_spec.name, current_spec.version, active_spec.version, in_gem_file, homepage_uri, documentation_uri, source_code_uri, GemInfo::STATUS_OUTDATED)
+          gem_infos << GemInfo.new(active_spec.name, current_spec.version, active_spec.version, in_gem_file, GemInfo::STATUS_OUTDATED)
         else
-          gem_infos << GemInfo.new(active_spec.name, current_spec.version, current_spec.version, in_gem_file, homepage_uri, documentation_uri, source_code_uri)
+          gem_infos << GemInfo.new(active_spec.name, current_spec.version, current_spec.version, in_gem_file)
         end
       end
       gem_infos
-    end
-
-    private
-
-    def get_gem_info(gem_name)
-      Gems.info(gem_name)
-    rescue StandardError
-      {}
     end
   end
 end
