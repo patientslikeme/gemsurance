@@ -110,6 +110,8 @@ module Gemsurance
           whitelisted_gem["CVE-#{cve}"]
         elsif osvdb
           whitelisted_gem["OSVDB-#{osvdb}"]
+        elsif ghsa
+          whitelisted_gem["GHSA-#{ghsa}"]
         else
           # There are is no CVE or OSVDB for this vulnerability
         end
