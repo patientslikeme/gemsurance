@@ -79,7 +79,8 @@ module Gemsurance
             current_version_isnt_patched = (vulnerability.patched_versions || []).none?(&current_version_satisfies_requirement)
             current_version_isnt_whitelisted = if (whitelisted_versions = fetch_whitelisted_versions_for(gem_info.name,
                                                                                                          vulnerability.cve,
-                                                                                                         vulnerability.osvdb))
+                                                                                                         vulnerability.osvdb,
+                                                                                                         vulnerability.ghsa))
               (whitelisted_versions || []).none?(&current_version_satisfies_requirement)
             else
               true
@@ -104,7 +105,7 @@ module Gemsurance
       puts "Generated report #{@output_file}."
     end
 
-    def fetch_whitelisted_versions_for(gem, cve = nil, osvdb = nil)
+    def fetch_whitelisted_versions_for(gem, cve = nil, osvdb = nil, ghsa = nil)
       if @whitelist && (whitelisted_gem = @whitelist[gem])
         if cve
           whitelisted_gem["CVE-#{cve}"]
